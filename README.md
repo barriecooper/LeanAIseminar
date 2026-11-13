@@ -13,7 +13,8 @@ test; the full workshop exercises will follow separately.
    you do not need to run terminal commands or install anything on your computer.
 3. Open **[Workshop/FirstSteps.lean](Workshop/FirstSteps.lean)** in the file explorer
    if it has not opened automatically. Click the `#eval` lines: Lean Infoview should
-   show `5` and `1/2`. Click just before `norm_num` or `ring` to see a proof goal;
+   show `5` and `mkRat 1 2` (the exact rational number 1/2). Click just before
+   `norm_num` or `ring` to see a proof goal;
    click after the tactic to see it solved. If needed, use the command palette
    (**F1**) → **Lean 4: Toggle Infoview**.
 4. Try changing `2 + 3`, then change it back. The rational example and the two
