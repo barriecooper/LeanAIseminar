@@ -1,0 +1,20 @@
+{
+  "name": "Lean 4 workshop",
+  "image": "mcr.microsoft.com/devcontainers/base:1-ubuntu-24.04",
+  "remoteUser": "vscode",
+  "remoteEnv": {
+    "PATH": "/home/vscode/.elan/bin:${containerEnv:PATH}"
+  },
+  "hostRequirements": { "cpus": 2, "memory": "8gb", "storage": "16gb" },
+  "customizations": {
+    "vscode": {
+      "extensions": ["leanprover.lean4"],
+      "settings": { "editor.unicodeHighlight.ambiguousCharacters": false }
+    },
+    "codespaces": {
+      "openFiles": ["Workshop/FirstSteps.lean"]
+    }
+  },
+  "onCreateCommand": "bash .devcontainer/setup.sh",
+  "waitFor": "onCreateCommand"
+}
