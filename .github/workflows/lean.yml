@@ -18,3 +18,8 @@ jobs:
         run: bash .devcontainer/setup.sh
       - name: Check that setup preserved dependency pins
         run: git diff --exit-code -- lean-toolchain lakefile.toml lake-manifest.json
+      - name: Check numerical explorer and reproducible fallback
+        run: |
+          node --test tests/explorer.test.cjs
+          node scripts/generate-fallback.cjs
+          git diff --exit-code -- visualisation/fallback.svg

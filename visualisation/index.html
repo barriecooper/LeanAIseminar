@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>From iteration to bifurcation · Lean + AI</title>
+<style>
+:root{color-scheme:dark;--bg:#101a29;--panel:#182639;--ink:#eef4fc;--muted:#b9c9dd;--mint:#73edc3;--orange:#ffbc7a}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.6 system-ui,sans-serif}main{max-width:1200px;margin:auto;padding:38px 28px}header{max-width:840px}.eyebrow{color:var(--mint);text-transform:uppercase;letter-spacing:.13em;font-size:13px;font-weight:700}h1{font-size:clamp(32px,5vw,56px);line-height:1.1;margin:14px 0 20px;letter-spacing:-.04em}h2{font-size:23px;margin:0 0 8px}p{margin:10px 0 18px}.muted,figcaption{color:var(--muted)}a{color:var(--mint)}.formula{font-size:23px;color:var(--mint)}.layout{display:grid;grid-template-columns:270px 1fr;gap:24px;margin-top:28px}.panel,figure{background:var(--panel);border:1px solid #34455d;border-radius:14px;padding:22px;margin:0}label{display:block;margin:16px 0 4px;font-size:15px;font-weight:600}input[type=number]{width:100%;background:var(--bg);border:1px solid #8295af;border-radius:6px;padding:9px;color:var(--ink);font:inherit}input[type=range]{width:100%;accent-color:var(--mint)}button{cursor:pointer;border:1px solid #8295af;background:#223750;color:var(--ink);border-radius:6px;font:inherit;padding:7px 12px}button:hover,button[aria-pressed=true]{background:var(--mint);color:#101a29;border-color:var(--mint)}button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid var(--orange);outline-offset:3px}.presets{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}button[type=submit]{width:100%;margin-top:18px}.plots{display:grid;gap:24px;min-width:0}canvas{display:block;width:100%;height:auto;margin:14px 0}figcaption{font-size:14px}.note{border-left:3px solid var(--orange);padding-left:16px;margin:28px 0}.prompt{font-size:19px}#error{color:var(--orange)}#status{font-size:15px;min-height:3em}footer{margin:30px 0;font-size:15px}.legend{color:var(--orange)}@media(max-width:760px){main{padding:24px 16px}.layout{grid-template-columns:1fr}.panel{padding:18px}form{display:grid;grid-template-columns:1fr 1fr;gap:0 16px}form .wide{grid-column:1/-1}h1{max-width:550px}}
+</style>
+<script src="explorer.js" defer></script>
+</head>
+<body><main>
+<header><div class="eyebrow">Lean + AI · a mathematical playground</div>
+<h1>One rule.<br>A world of behaviour.</h1>
+<p class="formula">xₙ₊₁ = r xₙ (1 − xₙ)</p>
+<p>Repeat this rule. Where does the orbit go? Change <em>r</em> to watch a single long-term value split into two, then four — and explore what comes next.</p>
+</header>
+<div class="layout">
+<section class="panel" aria-labelledby="controls-title"><h2 id="controls-title">Choose an experiment</h2>
+<p class="muted">Start with a preset. What changes as <em>r</em> increases?</p>
+<div class="presets" aria-label="Parameter presets"><button type="button" data-r="2.5">2.5</button><button type="button" data-r="3.2">3.2</button><button type="button" data-r="3.5">3.5</button><button type="button" data-r="3.9">3.9</button></div>
+<form id="controls">
+<div class="wide"><label for="r">Parameter r · 0 to 4</label><input id="r" name="r" type="number" min="0" max="4" step="any" value="3.5" required><label for="r-slider" class="muted">Slide r (steps of 0.001)</label><input id="r-slider" type="range" min="0" max="4" step="0.001" value="3.5"></div>
+<div><label for="x0">Initial value x₀ · 0 to 1</label><input id="x0" name="x0" type="number" min="0" max="1" step="any" value="0.2" required></div>
+<div><label for="transient">Transient iterations to skip</label><input id="transient" name="transient" type="number" min="0" max="5000" step="1" value="500" required></div>
+<div><label for="count">Iterations to plot</label><input id="count" name="count" type="number" min="2" max="500" step="1" value="80" required></div>
+<div class="wide"><button type="submit">Update plots</button><p id="error" role="alert"></p></div>
+</form>
+<p id="status" role="status" aria-live="polite"></p>
+</section>
+<div class="plots">
+<figure><h2>Follow one orbit</h2><p class="muted">Each dot is one iteration after the transient.</p><canvas id="orbit" width="900" height="290" role="img" aria-label="Orbit plot, iteration against x; numerical summary follows below."></canvas><figcaption id="orbit-caption">Loading numerical orbit…</figcaption></figure>
+<figure><h2>A view across parameters</h2><p class="muted">A vertical slice is the tail of an orbit at one value of <em>r</em>.</p><canvas id="bifurcation" width="900" height="340" role="img" aria-label="Bifurcation diagram, parameter r from 0 to 4 against x from 0 to 1."></canvas><figcaption>Same x₀ and transient as above; up to 120 tail points per slice across 801 parameter values. <span class="legend">Orange line: selected r.</span> The full range includes branches near x=0. <a href="fallback.svg">Open the static fallback diagram</a> (fixed settings).</figcaption></figure>
+</div>
+</div>
+<section class="note"><h2>Observation is the start of a question</h2><p>These are rounded, floating-point calculations, not proofs. The transient is the initial part we discard to look at later behaviour; discarding more can change what you see near a transition. A finite plot may hide slow convergence or long periods. Even at r = 4, some initial values land on fixed points; x₀ = 0 stays at 0 for every r.</p><p>A short irregular orbit does not establish chaos. The factorisation in the Lean activity concerns period-two candidates; it does not prove they attract nearby orbits.</p></section>
+<section><h2>From a picture to an exact claim</h2><p class="prompt">At r = 7/2, try x₀ = 3/7 (enter 0.42857142857142855). Then change the transient to 0. Can you spot the two alternating values?</p><p>Now open <strong>Exercises/01TwoCycle.lean</strong> in the Codespace editor to verify 3/7 → 6/7 → 3/7 using exact rationals. The decimal you entered here is only an approximation. At r = 3.5 this exact two-cycle exists even though nearby numerical orbits may approach a four-cycle: existence and attraction are different questions.</p></section>
+<noscript><p>JavaScript is disabled. <a href="fallback.svg">View the pre-generated bifurcation diagram</a>, then use the Lean exercises for exact proofs.</p></noscript>
+<footer>Works offline after downloading this folder. No libraries, accounts or external data requests. Return to the Codespace editor for the workshop instructions.</footer>
+</main></body></html>

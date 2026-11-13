@@ -1,0 +1,15 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Workshop: open numerical explorer",
+      "type": "shell",
+      "command": "python3",
+      "args": ["-m", "http.server", "8000", "--bind", "0.0.0.0", "--directory", "visualisation"],
+      "options": { "cwd": "${workspaceFolder}" },
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "dedicated" }
+    }
+  ]
+}
