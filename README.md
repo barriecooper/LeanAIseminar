@@ -52,7 +52,7 @@ Maintainer checks (also useful when recovering setup):
 ```bash
 bash .devcontainer/setup.sh  # install, retrieve caches, build; safe to rerun
 lake env lean Workshop/FirstSteps.lean  # display #eval output explicitly
-lake clean
+lake clean workshop
 lake build                 # clean rebuild of workshop targets, reusing Mathlib
 ```
 
