@@ -18,3 +18,9 @@ jobs:
         run: bash .devcontainer/setup.sh
       - name: Check that setup preserved dependency pins
         run: git diff --exit-code -- lean-toolchain lakefile.toml lake-manifest.json
+      - name: Check exercise scaffolding (intentional sorry warnings allowed)
+        run: |
+          export PATH="$HOME/.elan/bin:$PATH"
+          for exercise in Exercises/*.lean; do
+            lake env lean "$exercise"
+          done

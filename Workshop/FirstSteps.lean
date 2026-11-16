@@ -1,20 +1,16 @@
 import Mathlib.Tactic.NormNum
-import Mathlib.Tactic.Ring
 
-/-! Open this file first. These small examples check that Lean and Mathlib work.
-Click a `#eval` line to see its output in the Lean Infoview.
-Click inside a proof to see its current goal.
+/-! START HERE. Click after `by` to see a goal in Lean Infoview; click after
+`exact` to see it solved. F1 → Lean 4: Toggle Infoview if the pane is hidden.
+`a ∣ b` means there exists a natural multiplier c with b = a*c.
 -/
+#eval 3 * 4 -- 12
 
-#eval 2 + 3  -- 5
+-- A first proof: choose the multiplier 4, then check the equation.
+example : (3 : ℕ) ∣ 12 := by
+  exact ⟨4, by norm_num⟩
 
--- The ℚ annotation makes this exact rational arithmetic, not floating point.
-#eval (1 / 3 + 1 / 6 : ℚ)  -- mkRat 1 2 (the rational number 1/2)
-
--- A calculation is also a proposition that Lean can check.
-example : (1 / 3 + 1 / 6 : ℚ) = 1 / 2 := by
-  norm_num
-
--- Mathlib's ring tactic checks polynomial identities.
-example (x y : ℚ) : (x + y)^2 = x^2 + 2*x*y + y^2 := by
-  ring
+/-! Try changing this to 4 ∣ 20 and supplying the new multiplier.
+This is constructing a witness, not asking Lean to accept an AI's assertion.
+Next, open Exercises/01Divisibility.lean; its `sorry` placeholders are your tasks.
+-/

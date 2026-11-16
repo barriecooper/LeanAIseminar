@@ -1,64 +1,66 @@
-# Lean + AI workshop
+# Lean + AI: from divisibility to Euclid
 
-A browser-based introduction to Lean 4 and Mathlib for mathematics staff and
-postgraduate researchers. This first infrastructure PR provides a working smoke
-test; the full workshop exercises will follow separately.
+A 50-minute browser-only workshop for mathematics staff and postgraduate
+researchers. No Lean or programming experience needed. Explore proofs, library
+search, exact algorithms, Bézout coefficients and modular inverses.
 
 [![Open in Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/barriecooper/LeanAIseminar)
 
-1. Click **Open in Codespaces**, then **Create codespace** (a GitHub account and
-   available Codespaces quota are required). When reviewing a PR, select its branch
-   in the creation form.
-2. Wait for container setup to finish. Lean and Mathlib are installed automatically;
-   you do not need to run terminal commands or install anything on your computer.
-3. Open **[Workshop/FirstSteps.lean](Workshop/FirstSteps.lean)** in the file explorer
-   if it has not opened automatically. Click the `#eval` lines: Lean Infoview should
-   show `5` and `mkRat 1 2` (the exact rational number 1/2). Click just before
-   `norm_num` or `ring` to see a proof goal;
-   click after the tactic to see it solved. If needed, use the command palette
-   (**F1**) → **Lean 4: Toggle Infoview**.
-4. Try changing `2 + 3`, then change it back. The rational example and the two
-   proofs should have no error squiggles.
+1. **Launch before the seminar.** Click the badge and Create codespace. A GitHub
+   account and available Codespaces quota are required. When reviewing a PR,
+   select its branch in the creation form. Wait for automated setup to finish.
+   No local installation or participant terminal commands are needed.
+2. **Open [Workshop/FirstSteps.lean](Workshop/FirstSteps.lean)** if it hasn't opened
+   automatically. Click the `#eval` line to see `12` in Lean Infoview. Click after
+   `by` to see the proof goal, and after `exact` to see it solved. Use **F1 →
+   Lean 4: Toggle Infoview** if needed. Change `3 ∣ 12` to `4 ∣ 20` and the
+   multiplier `4` to `5`: your first proof should take under five minutes.
+3. **Work through the three files below** after the instructor demonstration.
+   Replace `sorry` with a proof; each file gives hints. An initial `sorry` warning
+   marks an unfinished task, not a verified proof. Save edits normally in the
+   browser editor. Red error squiggles mean Lean has not accepted your change.
 
-Allow several minutes for a cold start; download speed and machine size matter,
-so the five-minute first-success target still needs timing in a fresh Codespace.
-If Mathlib's cache service is unavailable, setup prints a warning and compiles
-from source, which can take substantially longer. Setup only reports **Workshop
-ready** after `lake build` succeeds. A failed setup is not a ready environment:
-open the creation log, fix the reported problem, then rerun
-`bash .devcontainer/setup.sh` in the Codespace terminal (or rebuild the container).
+| Active time | File | What to investigate |
+| --- | --- | --- |
+| 20–28 min | [01 Divisibility](Exercises/01Divisibility.lean), then [02 Modular arithmetic](Exercises/02Modular.lean) | Build a witness, actually try `exact?` to find a theorem, compare moduli 7 and 6 |
+| 28–42 min | [03 Euclid](Exercises/03Euclid.lean) | Change inputs, predict division rows, inspect Bézout coefficients, complete one theorem |
+| 42–50 min | Optional section of 03 | Reconstruct a rational from Euclid's continued-fraction quotients |
 
-For organisers: configure a **Codespaces prebuild** in repository Settings →
-Codespaces for the workshop branch and region before the session. The
-`onCreateCommand` installs dependencies, fetches the starter's Mathlib caches and
-builds during prebuild creation; `waitFor` prevents attaching before it finishes.
-Test a fresh participant Codespace shortly before delivery. Codespaces and initial
-dependency/cache downloads require internet access.
+The instructor demonstrates the mathematical story during minutes 0–20; the
+remaining 30 minutes are for your experiments. You do not need to write a
+recursive algorithm. For Euclid, `1071,462` gives gcd `21` and coefficients
+`-3,7`; for `3,7`, Bézout gives `1 = -2*3 + 7`, hence an inverse modulo 7.
 
-## Reproducibility and validation
+Useful AI prompts: “Explain the current goal and give one hint”; “How can I
+search Mathlib for a lemma with these hypotheses?”; “What does this cast change?”;
+“What generalisation does this trace suggest, and what hypotheses are needed?”
+Try the result in Lean and explain it. Lean checks the formal proposition you
+wrote, which may differ from the claim you intended.
 
-Lean **4.24.0** and Mathlib **v4.24.0** are paired. `lean-toolchain` pins the
-compiler; `lakefile.toml` selects Mathlib; the committed `lake-manifest.json` locks
-Mathlib and every transitive dependency to a Git commit. Participant setup uses
-that lockfile and never runs `lake update`. Elan's bootstrap release is pinned to
-4.1.2. The devcontainer uses Ubuntu 24.04 and the `leanprover.lean4` extension.
+Completed proofs are in [Solutions](Solutions). The instructor's algorithm and
+observer theorems are in [Workshop/Euclid.lean](Workshop/Euclid.lean); the optional
+identity is in [Workshop/ContinuedFractions.lean](Workshop/ContinuedFractions.lean).
+A computation, a library theorem and a conjecture are different kinds of evidence.
 
-In a configured Codespace, `lake build` checks the default `Workshop` library,
-including `Workshop/FirstSteps.lean` through `Workshop.lean`. All current examples
-are complete, with no `sorry`. Add future checked modules to this import tree;
-keep deliberately incomplete exercises separate from checked solutions.
+## Setup and organiser notes
 
-Maintainer checks (also useful when recovering setup):
+Allow several minutes for startup (previously about four; current timing needs a
+fresh Codespace rehearsal). Configure a Codespaces prebuild for the seminar
+branch and region in repository Settings → Codespaces. Setup installs Lean,
+fetches Mathlib artifacts and builds before attaching. Cache failure prints a
+warning and falls back to compilation, which can take much longer. **Workshop
+ready** appears only after a successful build. On setup failure, organisers
+should inspect the creation log and rerun `bash .devcontainer/setup.sh` or rebuild
+the container. Participants should ask the organiser for help.
 
-```bash
-bash .devcontainer/setup.sh  # install, retrieve caches, build; safe to rerun
-lake env lean Workshop/FirstSteps.lean  # display #eval output explicitly
-lake clean workshop
-lake build                 # clean rebuild of workshop targets, reusing Mathlib
-```
+Lean **4.24.0**, Mathlib **v4.24.0** and transitive Git revisions are pinned in
+`lean-toolchain`, `lakefile.toml` and `lake-manifest.json`; setup never runs
+`lake update`. Elan bootstrap is pinned to 4.1.2. Codespaces uses Ubuntu 24.04
+with the Lean extension. Internet access is needed for GitHub and initial downloads.
 
-For a fully fresh dependency test, use a new checkout without `.lake/` and run the
-setup script. GitHub Actions does this on pushes and pull requests and checks that
-setup leaves the pinned project files unchanged. To upgrade, deliberately update
-the Lean/Mathlib pair, run `lake update`, commit the new lockfile and retest a fresh
-Codespace. Do not update dependencies during a workshop.
+Maintainers: `lake build` checks all complete modules and solutions through
+`Workshop.lean`. Intentionally incomplete `Exercises/` files are separate; CI
+also checks they open without errors, allowing their explicit `sorry` warnings.
+See [validation](VALIDATION.md) for commands and results and
+[the instructor guide](INSTRUCTOR.md) for pacing and manual rehearsal checks.
+CI remains pull-request/manual-dispatch only.

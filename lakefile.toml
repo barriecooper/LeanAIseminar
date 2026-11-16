@@ -10,3 +10,8 @@ rev = "v4.24.0"
 
 [[lean_lib]]
 name = "Workshop"
+moreLeanArgs = ["-DwarningAsError=true"]
+
+[[lean_lib]]
+name = "Solutions"
+moreLeanArgs = ["-DwarningAsError=true"]

@@ -27,8 +27,9 @@ if [[ ! -f lake-manifest.json ]]; then
 fi
 lean --version
 lake --version
-# Cache only the imports needed by the starter, keeping cold starts small.
-if ! lake exe cache get Mathlib.Tactic.NormNum Mathlib.Tactic.Ring; then
+# Cache the imports used by the checked workshop, keeping cold starts small.
+if ! lake exe cache get Mathlib.Tactic.NormNum Mathlib.Tactic.Ring \
+    Mathlib.Data.ZMod.Basic Mathlib.Data.Int.GCD; then
   echo "WARNING: Mathlib cache unavailable; lake build will compile dependencies from source (much slower)." >&2
 fi
 lake build
