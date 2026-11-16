@@ -22,9 +22,18 @@ search, exact algorithms, Bézout coefficients and modular inverses.
 
 | Active time | File | What to investigate |
 | --- | --- | --- |
-| 20–28 min | [01 Divisibility](Exercises/01Divisibility.lean), then [02 Modular arithmetic](Exercises/02Modular.lean) | Build a witness, actually try `exact?` to find a theorem, compare moduli 7 and 6 |
-| 28–42 min | [03 Euclid](Exercises/03Euclid.lean) | Change inputs, predict division rows, inspect Bézout coefficients, complete one theorem |
+| 20–28 min | [01 Divisibility](Exercises/01Divisibility.lean), then [02 Modular arithmetic](Exercises/02Modular.lean) | Try `exact?` in 01 task 2, then the first two calculations in 02; compare moduli 7 and 6 |
+| 28–42 min | [03 Euclid](Exercises/03Euclid.lean) | Compare trace and counter on the same inputs, inspect Bézout coefficients, complete one theorem |
 | 42–50 min | Optional section of 03 | Reconstruct a rational from Euclid's continued-fraction quotients |
+
+Minimum route before minute 28: **01 task 2 (theorem search), then the first two
+calculations in 02**. The first witness hole in 01 repeats FirstSteps: skip it if
+comfortable. The gcd search, general cast theorem and inverse in 01/02 are
+optional. Move to 03 at minute 28 even if optional holes remain.
+
+In 03, run the adjacent `trace` and `countSteps` commands: one records three
+rows and the other records `3`, while both return gcd `21`. Change both inputs
+and ask what the universal observer theorem guarantees about the answer.
 
 The instructor demonstrates the mathematical story during minutes 0–20; the
 remaining 30 minutes are for your experiments. You do not need to write a

@@ -22,8 +22,10 @@ actually checked during implementation.
   let Lean find the appropriate arithmetic laws (a ring, sometimes a field).
   Contrast 3*5 = 1 modulo 7 with 2*3 = 0 modulo 6. Show cast_zero and
   inverse_of_coprime. An inverse operation's syntax does not guarantee a unit.
-- 12–20: Run display 1071 462: three Euclidean divisions, gcd 21. Read the observer
-  API as “record a row without choosing the next state”. State observe_result
+- 12–20: Run trace and countSteps 1071 462 side by side: the first records three
+  division rows, the second only 3; both return gcd 21. Use display for readable
+  equations. Read the observer API as “record without choosing the next state”.
+  Show trace_result and countSteps_result applying the same observe_result
   (all observers) and euclid_eq_gcd (all inputs), and explain decreasing b.
   Show extended and Mathlib gcdA/gcdB: 21 = -3*1071+7*462. Then 3,7 yields
   1 = -2*3+7, giving residue 5 as inverse. The custom extended code is tested on
@@ -32,14 +34,19 @@ actually checked during implementation.
 ## Active work, 20–50 minutes
 Pairs help: one predicts the mathematics, one edits, then swap. At minute 28 move
 to 03 even if optional tasks in 01/02 remain. At minute 42 invite continued
-fractions or more core experiments. Required completions: witness, theorem-search
-transitivity, one modular calculation, and one of the two main Euclid theorems.
+fractions or more core experiments. Minimum route: the witness edit in
+FirstSteps, then 01 task 2 (transitivity search) and the first two finite calculations in 02, then one of the two main
+Euclid theorems in 03. Spend roughly minutes 20–24 on the search and 24–28 on
+modular arithmetic. The first hole in 01 repeats FirstSteps: skip if comfortable.
+The gcd search, general cast theorem and inverse in 01/02 are optional.
 Other holes are optional practice with complete checked solutions available.
 
 A useful Euclid experiment is reversing inputs; another is b = 0, including
-(0,0). Ask whether the observer theorem still applies. Propose an observer that
-counts steps rather than storing rows; observe_result covers it too. Students
-need not read the strong-induction proof to understand its quantified statement.
+(0,0). Ask whether the observer theorem still applies. Compare the implemented
+trace collector and step counter on the same inputs.
+Ask what each records and what observe_result guarantees: equal answers, not
+equal recorded data. The specialisations trace_result and countSteps_result
+make its application to both explicit. Students need not read the strong-induction proof to understand its quantified statement.
 
 Optional continued fractions: [2;3,7] means 2 + 1/(3 + 1/7) = 51/22.
 Compare with 1071/462, change inputs and formulate a conjecture. The repository

@@ -4,7 +4,11 @@ import Workshop.Arithmetic
 `sorry`. The goal is what remains to prove; the lines above it are hypotheses.
 `\dvd` types ∣; `\N` types ℕ; you can also copy the symbols below.
 
-1. First success: supply a multiplier witnessing 4 ∣ 20.
+Minimum route: do task 2 (theorem search), then move to the first two finite
+calculations in 02Modular.lean. Move to 03Euclid.lean at minute 28.
+
+1. QUICK OPTIONAL PRACTICE: supply a multiplier witnessing 4 ∣ 20.
+This repeats the witness edit in FirstSteps.lean; skip if comfortable with it.
 Hint: `exact ⟨5, by norm_num⟩`. Why is the equation 20 = 4*5?
 Change both numbers and predict whether a witness still exists.
 AI: “Explain this goal and what an existential witness is; give one hint.”
@@ -20,7 +24,7 @@ AI: “How can I search Mathlib for a theorem that composes these hypotheses?”
 example (a b c : ℕ) (hab : a ∣ b) (hbc : b ∣ c) : a ∣ c := by
   sorry
 
-/-! 3. Stretch search: find a theorem that constructs divisibility of a gcd
+/-! 3. OPTIONAL stretch search: find a theorem that constructs divisibility of a gcd
 from the two hypotheses. What are its explicit and implicit arguments? -/
 example (d a b : ℕ) (ha : d ∣ a) (hb : d ∣ b) : d ∣ Nat.gcd a b := by
   sorry

@@ -19,15 +19,18 @@ splitting the available time across two extensions.
 | 0–6 | Instructor: FirstSteps, witness for 3 ∣ 12 | Infoview goal; definition versus supplied witness |
 | 6–12 | Instructor: theorem signatures, gcd, ZMod | Library reuse, casts, ring versus field |
 | 12–20 | Instructor: Euclid trace and Bézout | Computation, observer theorem, inverse motivation |
-| 20–28 | Participants: Exercises/01 and 02 | First witness, actual exact? search, change modulus |
+| 20–28 | Participants: Exercises/01 and 02 | Skip repeated witness if comfortable; exact? search, two modular calculations |
 | 28–42 | Participants: Exercises/03 | Vary inputs, predict trace, complete one theorem |
 | 42–50 | Participants: optional continued fractions and debrief | Conjecture versus proved identity; AI reflection |
 
 Keep the instructor demonstration to 20 minutes. The 30-minute active route
 requires neither implementing recursion nor proving extended Euclid correctness.
 Offer participants a choice of finite arithmetic or library-reuse theorem in 03.
-The search and gcd stretch tasks can be skipped if needed, except the core
-transitivity search, which participants should actually attempt.
+Minimum before minute 28: 01 task 2 (transitivity search), then the first two
+finite calculations in 02. The witness hole in 01 repeats FirstSteps and can be
+skipped if comfortable; further gcd search, general casts and inverses are
+optional. In 03 compare trace and countSteps on the same inputs: three rows
+versus a count of 3, both with gcd 21. Both specialise observe_result.
 
 ## Mathematical boundaries
 Divisibility on ℕ is ∃ c, b = a*c, checked definitionally in Arithmetic.lean.
@@ -39,7 +42,7 @@ including zero. These are checked theorems, not empirical checks on sample pairs
 Mathlib supplies the general Bézout identity and extended coefficients. The small
 custom extended implementation is an optional reading aid with concrete checks;
 we do not claim a general correctness theorem for it. Extended coefficient-state
-tracing is deferred; division rows are the observer's deliberately minimal data.
+tracing is deferred; division rows and a step count are the two deliberately minimal observers.
 The continued-fraction reconstruction is proved for the concrete [2;3,7] example,
 not for all quotient traces. Rational inverse at zero is total in Lean, so a
 future general theorem must state suitable hypotheses.

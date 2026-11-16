@@ -5,12 +5,19 @@ import Workshop.Arithmetic
 appears in Infoview. Change inputs to 35,12 and then to 12,35 or 0,0.
 Predict the final remainder first. No recursion-writing is required.
 
-The observer stores division rows separately from the algorithm's answer.
+Compare the adjacent trace and countSteps evaluations below. For 1071,462,
+the trace stores three division rows; the counter stores 3. Both return gcd 21.
+Change the inputs in BOTH commands. What does each observer record, and what
+stays identical? Does observe_result guarantee identical recorded data, or only
+identical mathematical answers?
 Open Workshop/Euclid.lean and #check Workshop.observe_result and
-Workshop.euclid_eq_gcd. Which is a statement about software observation, and
+Workshop.trace_result, Workshop.countSteps_result and Workshop.euclid_eq_gcd.
+The first two specialise observe_result to the two observers. Which is a statement about software observation, and
 which connects the algorithm to a mathematical specification?
 AI: “Explain the quantifiers in observe_result. What can an observer change?” -/
-#eval Workshop.display 1071 462
+#eval Workshop.trace 1071 462 -- (21, three division rows)
+#eval Workshop.countSteps 1071 462 -- (21, 3)
+#eval Workshop.display 1071 462 -- the same rows as readable equations
 #eval Workshop.extended 1071 462 -- (21, -3, 7): 21 = -3*1071 + 7*462
 #eval Workshop.extended 3 7 -- (1, -2, 1): 1 = -2*3 + 7
 #eval Nat.gcd 1071 462

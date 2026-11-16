@@ -52,11 +52,23 @@ theorem euclid_eq_gcd (a b : ℕ) : euclid a b = Nat.gcd a b := by
 def trace (a b : ℕ) : ℕ × List Division :=
   observe (fun rows row => rows ++ [row]) a b []
 
+-- A second observer: retain only the number of divisions, not their rows.
+def countSteps (a b : ℕ) : ℕ × ℕ :=
+  observe (fun count _ => count + 1) a b 0
+
+-- Two applications of the same universal theorem; recorded data can differ.
+theorem trace_result (a b : ℕ) : (trace a b).1 = euclid a b := by
+  exact observe_result (fun rows row => rows ++ [row]) a b []
+
+theorem countSteps_result (a b : ℕ) : (countSteps a b).1 = euclid a b := by
+  exact observe_result (fun count _ => count + 1) a b 0
+
 def display (a b : ℕ) : List String :=
   (trace a b).2.map fun d => s!"{d.a} = {d.q}*{d.b} + {d.r}"
 
 #eval display 1071 462
-#eval (trace 1071 462).1
+#eval trace 1071 462 -- gcd 21 and three division rows
+#eval countSteps 1071 462 -- (21, 3): same gcd, only a count recorded
 
 -- Built-in extended Euclid: integer coefficients can be negative.
 #check Nat.gcdA

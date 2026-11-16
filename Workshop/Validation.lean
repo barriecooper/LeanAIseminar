@@ -9,6 +9,15 @@ example : display 1071 462 =
   unfold display trace
   repeat' (rw [observe]; norm_num)
   decide
+example : countSteps 1071 462 = (21, 3) := by
+  unfold countSteps
+  repeat' (rw [observe]; norm_num)
+example : (trace 1071 462).2.length = 3 := by
+  unfold trace
+  repeat' (rw [observe]; norm_num)
+-- The observers agree on the result for every input, not only this example.
+example (a b : ℕ) : (trace a b).1 = (countSteps a b).1 := by
+  rw [trace_result, countSteps_result]
 example : (trace 1071 462).1 = 21 := by
   unfold trace
   repeat' (rw [observe]; norm_num)

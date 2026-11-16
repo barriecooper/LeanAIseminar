@@ -66,3 +66,18 @@ INSTRUCTOR.md: launch the PR branch in a fresh Codespace, verify extension/goals
 make the witness edit, try the theorem search in the editor, run the traces,
 and time both startup and the 30-minute active route. The historical four-minute
 startup and five-minute first-proof target have not been remeasured here.
+
+## Review follow-up: two observers and pacing
+Added countSteps alongside trace, with adjacent participant evaluations on the
+same inputs. Compiled trace_result and countSteps_result each apply the universal
+observe_result theorem; a further checked example shows their answers agree for
+all inputs. Exact regressions check countSteps 1071 462 = (21, 3) and that the
+trace has three rows (its gcd 21 and row contents remain checked separately).
+
+Re-ran `lake build`: passed (1128 jobs), including all sample completions in
+Solutions. Rechecked all three exercise files: no errors, only the same ten
+intentional sorry warnings. The minimum pre-Euclid route is now the transitivity
+search and two finite modular calculations; the repeated witness is explicitly
+skippable, and further searches, general casts and inverses are optional.
+Hosted Codespaces/editor/Infoview and timed novice rehearsal remain manual
+acceptance checks to perform after these edits; they have not been claimed here.
