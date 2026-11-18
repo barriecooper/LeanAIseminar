@@ -32,7 +32,7 @@ We can also evaluate expressions with `#eval`.
 #eval (13 : Int) / 4  -- also 3 because this is integer arithmetic
 #eval (13 : Int) % 4  -- remainder is 1 when dividing 13 by 4
 
-#eval (13 : Int) / 4 * 4          -- integer arithmetic yields 12
+#eval (13 : Int) / 4 * 4  -- integer arithmetic yields 12
 #eval (13 : Rat) / 4 * 4  -- rational arithmetic yields 13
 
 /-
@@ -40,7 +40,7 @@ We can assert statements as theorems or examples (unnamed theorems), which requi
 -/
 
 example : (4 : Int) ∣ 12 := by  -- the `by` keyword tells Lean to enter proof tactic mode
-  grind                 -- a useful workhorse proof tactic that deals with many simple goals
+  grind  -- a useful workhorse proof tactic that deals with many simple goals
 
 example : ¬ ((4 : Int) ∣ 13) := by
   sorry                 -- replace the `sorry` placeholder with a suitable proof tactic
@@ -52,8 +52,8 @@ A theorem showing how to deal with `there exists`.
 theorem dvd_trans (hab : a ∣ b) (hbc : b ∣ c) : a ∣ c := by
   obtain ⟨m, hm⟩ := hab   -- hab is a pair consisting of a witness we call `m` and a proof `hm`
   obtain ⟨n, hn⟩ := hbc   -- hbc similarly consists of a witness `n` and a proof `hn`
-  exists m * n            -- we exhibit a witness `m * n`
-  grind                   -- we must prove that our witness satisfies the required equation
+  exists m * n           -- we exhibit a witness `m * n`
+  grind                  -- we must prove that our witness satisfies the required equation
 
 /-
 And an alternative version showing how to deal with `for all` and how to use existing theorems.
