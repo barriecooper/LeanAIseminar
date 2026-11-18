@@ -27,9 +27,5 @@ if [[ ! -f lake-manifest.json ]]; then
 fi
 lean --version
 lake --version
-# Cache only the Mathlib import needed by the checked solutions, keeping cold starts small.
-if ! lake exe cache get Mathlib.Tactic.NormNum; then
-  echo "WARNING: Mathlib cache unavailable; lake build will compile dependencies from source (much slower)." >&2
-fi
 lake build
 echo "Workshop ready. Open Workshop/Tutorial.lean."

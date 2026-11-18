@@ -21,8 +21,7 @@ events and that reversing the accumulated trace restores chronological order.
 ## Build and validation
 
 Preserve the pinned Lean toolchain, Mathlib version and committed Lake manifest.
-The devcontainer installs dependencies automatically, tries the Mathlib cache
-and reports setup failures. Keep the README instructions browser-only for
+The devcontainer installs dependencies automatically and reports setup failures. Keep the README instructions browser-only for
 participants and point both the README and Codespaces to the tutorial.
 
 The default `lake build` checks the library and sample solutions. Allow

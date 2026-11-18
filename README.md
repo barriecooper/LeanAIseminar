@@ -26,9 +26,7 @@ to compare approaches.
 
 Allow several minutes for a cold start and rehearse with a fresh Codespace.
 Organisers can configure a Codespaces prebuild for the workshop branch and
-region. If Mathlib's cache is unavailable, setup warns and builds from source,
-which can take substantially longer. If setup fails, open the creation log and
-rerun `bash .devcontainer/setup.sh` after fixing the reported problem.
+region. If setup fails, open the creation log and rerun `bash .devcontainer/setup.sh` after fixing the reported problem.
 
 Lean and Mathlib are pinned to v4.24.0, and the committed Lake manifest locks
 transitive dependencies. The PR workflow checks the default build and runs the
