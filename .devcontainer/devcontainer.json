@@ -12,7 +12,7 @@
       "settings": { "editor.unicodeHighlight.ambiguousCharacters": false }
     },
     "codespaces": {
-      "openFiles": ["Workshop/FirstSteps.lean"]
+      "openFiles": ["Workshop/Tutorial.lean"]
     }
   },
   "onCreateCommand": "bash .devcontainer/setup.sh",
