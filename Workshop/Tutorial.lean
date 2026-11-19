@@ -1,9 +1,10 @@
 import Workshop.Algorithms.Euclid
+import Mathlib.Data.ZMod.Basic
 
 /-!
 Open Lean Infoview and click a `#check` or `#eval` line to see its result.
 Click inside a proof to see the goal. Try editing the examples and replacing
-the two `sorry` placeholders with proofs. If you use AI, ask it to explain
+the `sorry` placeholders with proofs. Sections marked optional can wait. If you use AI, ask it to explain
 the current goal and suggest one next step, then check the suggestion in Lean.
 -/
 
@@ -60,12 +61,50 @@ And an alternative version showing how to deal with `for all` and how to use exi
 -/
 
 theorem quant_dvd_trans : ∀ x : Int, ∀ y : Int, ∀ z : Int, x ∣ y ∧ y ∣ z → x ∣ z := by
-  intro x y z                     -- introduce concrete named objects to work with
-  intro ⟨hxy, hyz⟩                -- introduce the pair of conditions `hxy` and `hyz`
+  intro x y z ⟨hxy, hyz⟩          -- introduce the integers and unpack the two conditions
   apply dvd_trans x y z hxy hyz   -- conclude by applying our previous theorem `dvd_trans`
 
 /-
 Exercise 1: Invent some of your own theorems and proofs involving divisibility. Depending on how ambitious you are, you might need to explore (with the help of AI?) new proof tactics.
+-/
+
+/-
+# Mathlib and arithmetic modulo 7
+
+`(a : ZMod 7)` coerces the integer `a` to its residue class modulo 7.
+Two integers have the same residue class when their difference is divisible
+by 7. In particular, multiples of 7 have residue zero.
+-/
+#check (a : ZMod 7)
+#eval ((-1 : Int) : ZMod 7)  -- 6
+#eval ((13 : Int) : ZMod 7)  -- 6
+#eval ((14 : Int) : ZMod 7)  -- 0
+
+#check Int.castRingHom (ZMod 7)
+#check ZMod.intCast_zmod_eq_zero_iff_dvd
+
+example (x : Int) : (x : ZMod 7) = 0 ↔ (7 : Int) ∣ x := by
+  exact ZMod.intCast_zmod_eq_zero_iff_dvd x 7
+
+-- The canonical ring homomorphism preserves addition.
+example (x y : Int) :
+    (Int.castRingHom (ZMod 7)) (x + y) = (x : ZMod 7) + (y : ZMod 7) := by
+  exact map_add (Int.castRingHom (ZMod 7)) x y
+
+/- Optional exercise. Adapt the addition proof to multiplication. -/
+example (x y : Int) :
+    (Int.castRingHom (ZMod 7)) (x * y) = (x : ZMod 7) * (y : ZMod 7) := by
+  sorry
+
+example (x y z : Int) (h : x ∣ y - z) : x ∣ z - y := by
+  apply?
+
+/-
+Read the suggestion in Infoview. Replace `apply?` with the explicit proof
+using the suggested Mathlib theorem, then explain why reversing the
+difference preserves divisibility. The earlier witness proof constructs a
+multiplier and checks its equation. Here a library theorem supplies the
+implication from the given divisibility hypothesis.
 -/
 
 /-
@@ -161,5 +200,67 @@ example (a b : Nat) :
 
 /- Exercise 4: Try another input pair with all three observers. Predict the
    count from the trace, then try a pair with second input zero. -/
+
+/-
+## Optional: collecting observations from the trace
+
+`observation_eq_trace_fold` says updating an observer as events occur gives
+the same state as folding its update function over the chronological trace.
+The trace observer prepends events, so `euclidTrace` reverses them before
+the fold. The quotient observer also prepends, so both results below store
+the quotients in reverse order.
+
+The theorem works with any observer state. For example, a greedy colouring
+observer could keep separate counts for starting a vertex, inspecting a
+neighbour, testing a colour and assigning a colour.
+-/
+#eval (euclidTrace 1071 462).2.foldl
+  quotientObserver.observe quotientObserver.initial  -- [7, 3, 2]
+
+example (a b : Nat) :
+    (runEuclid quotientObserver a b).2 =
+      (euclidTrace a b).2.foldl quotientObserver.observe quotientObserver.initial := by
+  exact observation_eq_trace_fold euclidStep quotientObserver (b + 1) (a, b)
+
+/-
+Optional exercise. `countQuotientOne` counts divisions whose quotient is 1.
+Use the generic theorem to prove its online count agrees with the fold.
+-/
+theorem countQuotientOne_eq_trace_fold (a b : Nat) :
+    (runEuclid countQuotientOne a b).2 =
+      (euclidTrace a b).2.foldl countQuotientOne.observe countQuotientOne.initial := by
+  sorry
+
+/-
+## Optional AI-assisted challenge: prove Euclid computes the GCD
+
+Evaluations test individual inputs. Observer independence establishes that
+observers agree on the result. Prove that result equals `Nat.gcd` in three stages.
+
+1. GCD preservation. Show that a division preserves the GCD of the pair,
+   then extend this to the plain run by induction on fuel.
+2. Fuel bound. Show that the divisor decreases at each division, so
+   `b + 1` fuel reaches a pair with second component zero.
+3. Observer and runner. Use `runObserved_correct` to reduce the observed
+   result to the first component of the plain run. Apply the first two
+   stages and the GCD rule for a zero second argument.
+
+Ask AI one question at a time and check each suggested lemma with `#check`
+and each proof step in Lean Infoview. Try these prompts.
+
+* What invariant relates the GCD of the current pair to the starting pair?
+  Which Lean lemmas express the remainder step?
+* If the divisor is positive, which Lean lemma bounds the next divisor?
+  How does that inequality support induction on the fuel?
+* Once the final divisor is zero, how can I use `runObserved_correct`
+  to finish the proof for an arbitrary observer?
+
+The full instructor proof is `euclid_correct` in Workshop/Algorithms/Euclid.lean.
+-/
+example (o : EventObserver EuclidEvent) (a b : Nat) :
+    (runEuclid o a b).1 = Nat.gcd a b := by
+  -- First relate the observed run to the plain run.
+  simp only [runEuclid, runObserved_correct]
+  sorry
 
 end Tutorial
