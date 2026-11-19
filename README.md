@@ -1,9 +1,9 @@
 # Lean + AI workshop
 
 A 50-minute introduction to Lean 4 for mathematics staff and postgraduate
-researchers. We start with integer divisibility, use induction to reason about
-a recurrence, experiment with Collatz iterates, then see what we can learn by
-recording Euclid's division steps.
+researchers. We start with integer divisibility and use Mathlib to explore
+arithmetic modulo 7. Then we reason about a recurrence by induction, experiment
+with Collatz iterates, and collect observations from Euclid's division steps.
 
 [![Open in Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/barriecooper/LeanAIseminar)
 
@@ -16,11 +16,13 @@ recording Euclid's division steps.
    Infoview. Click inside a proof to see its goal. If needed, use **F1** →
    **Lean 4: Toggle Infoview**.
 4. Work through that file in order. Change inputs to the calculations and try
-   replacing the two `sorry` placeholders with proofs. Lean warns about those
-   placeholders until you finish them.
+   replacing the core `sorry` placeholders with proofs. Save the multiplication
+   and observer exercises and the AI-assisted GCD proof for optional work.
+   Lean warns about any remaining placeholders.
 
 [Sample exercise solutions](Workshop/Solutions.lean) are available when you want
-to compare approaches.
+to compare approaches. The full GCD correctness proof is in
+[Workshop/Algorithms/Euclid.lean](Workshop/Algorithms/Euclid.lean).
 
 ## Workshop setup and validation
 
@@ -38,4 +40,4 @@ lake env lean Workshop/Tutorial.lean
 ```
 
 The default build checks the library and sample solutions. The worksheet check
-also prints the `#eval` outputs and should emit exactly two `sorry` warnings.
+also prints the `#eval` outputs and should emit exactly four intentional `sorry` warnings.
