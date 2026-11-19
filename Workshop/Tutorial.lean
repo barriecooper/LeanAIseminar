@@ -61,8 +61,7 @@ And an alternative version showing how to deal with `for all` and how to use exi
 -/
 
 theorem quant_dvd_trans : ∀ x : Int, ∀ y : Int, ∀ z : Int, x ∣ y ∧ y ∣ z → x ∣ z := by
-  intro x y z                     -- introduce concrete named objects to work with
-  intro ⟨hxy, hyz⟩                -- introduce the pair of conditions `hxy` and `hyz`
+  intro x y z ⟨hxy, hyz⟩          -- introduce the integers and unpack the two conditions
   apply dvd_trans x y z hxy hyz   -- conclude by applying our previous theorem `dvd_trans`
 
 /-
@@ -97,13 +96,16 @@ example (x y : Int) :
     (Int.castRingHom (ZMod 7)) (x * y) = (x : ZMod 7) * (y : ZMod 7) := by
   sorry
 
-/-
-Click `apply?` in Infoview and replace it with the suggested explicit proof.
-The earlier witness proof constructs a multiplier and checks its equation.
-Here the library theorem already supplies divisibility of the sum.
--/
-example (x y z : Int) (hy : x ∣ y) (hz : x ∣ z) : x ∣ y + z := by
+example (x y z : Int) (h : x ∣ y - z) : x ∣ z - y := by
   apply?
+
+/-
+Read the suggestion in Infoview. Replace `apply?` with the explicit proof
+using the suggested Mathlib theorem, then explain why reversing the
+difference preserves divisibility. The earlier witness proof constructs a
+multiplier and checks its equation. Here a library theorem supplies the
+implication from the given divisibility hypothesis.
+-/
 
 /-
 # Recursion and induction
@@ -200,7 +202,7 @@ example (a b : Nat) :
    count from the trace, then try a pair with second input zero. -/
 
 /-
-## Collecting observations from the trace
+## Optional: collecting observations from the trace
 
 `observation_eq_trace_fold` says updating an observer as events occur gives
 the same state as folding its update function over the chronological trace.
@@ -221,23 +223,27 @@ example (a b : Nat) :
   exact observation_eq_trace_fold euclidStep quotientObserver (b + 1) (a, b)
 
 /-
-Optional exercise. In a copy of the example, replace the quotient list
-with this observer that counts divisions whose quotient is 1. Use the same
-generic theorem to prove agreement with the fold.
+Optional exercise. `countQuotientOne` counts divisions whose quotient is 1.
+Use the generic theorem to prove its online count agrees with the fold.
 -/
-def countQuotientOne : EventObserver EuclidEvent where
-  State := Nat
-  initial := 0
-  observe n
-    | .division _ _ q _ => if q = 1 then n + 1 else n
+theorem countQuotientOne_eq_trace_fold (a b : Nat) :
+    (runEuclid countQuotientOne a b).2 =
+      (euclidTrace a b).2.foldl countQuotientOne.observe countQuotientOne.initial := by
+  sorry
 
 /-
 ## Optional AI-assisted challenge: prove Euclid computes the GCD
 
 Evaluations test individual inputs. Observer independence establishes that
-observers agree on the result. To identify that result with `Nat.gcd` for
-every input, show that the GCD is preserved and prove separately that the
-fuel budget suffices to reach a zero divisor.
+observers agree on the result. Prove that result equals `Nat.gcd` in three stages.
+
+1. GCD preservation. Show that a division preserves the GCD of the pair,
+   then extend this to the plain run by induction on fuel.
+2. Fuel bound. Show that the divisor decreases at each division, so
+   `b + 1` fuel reaches a pair with second component zero.
+3. Observer and runner. Use `runObserved_correct` to reduce the observed
+   result to the first component of the plain run. Apply the first two
+   stages and the GCD rule for a zero second argument.
 
 Ask AI one question at a time and check each suggested lemma with `#check`
 and each proof step in Lean Infoview. Try these prompts.

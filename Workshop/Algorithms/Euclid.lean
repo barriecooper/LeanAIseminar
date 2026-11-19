@@ -23,6 +23,13 @@ def quotientObserver : EventObserver EuclidEvent where
     match e with
     | .division _ _ q _ => q :: xs
 
+/-- Count division events with quotient one. -/
+def countQuotientOne : EventObserver EuclidEvent where
+  State := Nat
+  initial := 0
+  observe n
+    | .division _ _ q _ => if q = 1 then n + 1 else n
+
 def runEuclid (o : EventObserver EuclidEvent)
     (a b : Nat) : Nat × o.State :=
   let (s, obs) :=

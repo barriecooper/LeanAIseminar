@@ -17,8 +17,8 @@ with Collatz iterates, and collect observations from Euclid's division steps.
    **Lean 4: Toggle Infoview**.
 4. Work through that file in order. Change inputs to the calculations and try
    replacing the core `sorry` placeholders with proofs. Save the multiplication
-   and observer exercises and the AI-assisted GCD proof for optional work.
-   Lean warns about any remaining placeholders.
+   exercise, observer trace-fold section, and AI-assisted GCD proof for optional
+   work. Lean warns about any remaining placeholders.
 
 [Sample exercise solutions](Workshop/Solutions.lean) are available when you want
 to compare approaches. The full GCD correctness proof is in
@@ -40,4 +40,5 @@ lake env lean Workshop/Tutorial.lean
 ```
 
 The default build checks the library and sample solutions. The worksheet check
-also prints the `#eval` outputs and should emit exactly four intentional `sorry` warnings.
+also prints the `#eval` outputs and should emit exactly five intentional
+`sorry` warnings.

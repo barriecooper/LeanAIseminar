@@ -34,4 +34,10 @@ theorem collatz_mod_four (n : Nat) (h : n % 4 = 1) :
   simp [collatz]
   grind
 
+-- Optional observer exercise.
+theorem countQuotientOne_eq_trace_fold (a b : Nat) :
+    (runEuclid countQuotientOne a b).2 =
+      (euclidTrace a b).2.foldl countQuotientOne.observe countQuotientOne.initial := by
+  exact observation_eq_trace_fold euclidStep countQuotientOne (b + 1) (a, b)
+
 end Solutions

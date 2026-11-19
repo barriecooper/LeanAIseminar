@@ -14,7 +14,7 @@ Use [Workshop/Tutorial.lean](Workshop/Tutorial.lean) throughout.
 | 16–20 min | Evaluate the recurrence and walk through the proof of evenness by induction. |
 | 20–30 min | Try the divisibility and recurrence exercises. Ask AI to explain a current goal or suggest a next tactic, and check it in Lean. |
 | 30–40 min | Compare Collatz iterates for different starting points. Try proving the modulo-four statement. |
-| 40–50 min | Compare Euclid's count, trace and quotients on a new pair. Compare the online quotient list with the fold over the chronological trace. |
+| 40–50 min | Compare Euclid's count, trace and quotients on a new pair. Discuss what observer independence guarantees. |
 
 The Collatz output illustrates particular orbits. The modulo-four exercise proves
 a one-step property. Euclid's trace records the divisions and its quotients
@@ -23,11 +23,11 @@ theorem says changing the observer preserves the arithmetic result. The
 trace-fold theorem explains how to reproduce any observer state from the
 chronological events, including a profile with separate counts by event type.
 
-Optional work includes proving the modular multiplication identity, applying
-the trace-fold theorem to the quotient-one count, and using AI to explore the
-GCD correctness proof. That challenge combines GCD preservation with a fuel
-bound and has a complete instructor proof in `Workshop/Algorithms/Euclid.lean`.
+Optional work includes proving the modular multiplication identity, folding
+the chronological trace to reproduce the quotient list and quotient-one count,
+and using AI to explore GCD correctness. That challenge combines GCD preservation
+with a fuel bound and has a complete proof in `Workshop/Algorithms/Euclid.lean`.
 
 Before delivery, time the setup and activities in a fresh Codespace. Confirm
-that Infoview displays evaluations and goals and that the four intentional student
+that Infoview displays evaluations and goals and that the five intentional student
 placeholders appear as warnings.
