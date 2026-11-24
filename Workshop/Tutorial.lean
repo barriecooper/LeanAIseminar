@@ -2,6 +2,7 @@ module
 
 import Workshop.Algorithms.Euclid
 import Mathlib.Data.ZMod.Basic
+import Mathlib.Tactic.Linarith
 -- The #eval examples also use these modules at compile time.
 meta import Workshop.Algorithms.Euclid
 meta import Mathlib.Data.ZMod.Basic
@@ -227,6 +228,27 @@ theorem sum_map_double (tree : LabelledTree Nat) :
 end LabelledTree
 
 /-
+## Optional: cooling halfway to room temperature
+
+A mug starts at 80°C in a 20°C room. In this model, each step takes the
+mean of the current temperature and room temperature, halving the gap.
+We use rational numbers so half degrees are kept exactly.
+-/
+def coolingStep (temp room : ℚ) : ℚ :=
+  (temp + room) / 2
+
+#eval coolingStep 80 20                      -- 50
+#eval coolingStep (coolingStep 80 20) 20      -- 35
+
+/- Try different temperatures. Before reading the proof, predict where the
+   next temperature lies when the mug starts at or above room temperature.
+   Click after `constructor` in Infoview to see the two inequalities. -/
+theorem coolingStep_between (room temp : ℚ) (h : room ≤ temp) :
+    room ≤ coolingStep temp room ∧ coolingStep temp room ≤ temp := by
+  unfold coolingStep
+  grind
+
+/-
 # Collatz dynamics
 
 We can also use `if ... then ... else` conditions, e.g. to define the collatz function.
@@ -428,5 +450,80 @@ example (o : EventObserver EuclidEvent) (a b : Nat) :
   -- With a zero divisor, the GCD is the first component of the final pair.
   rw [final_divisor_zero, Nat.gcd_zero_right] at gcd_preserved
   exact gcd_preserved
+
+/-
+# Optional: statistics
+
+## Simpson's paradox on a solver benchmark
+
+                A solved    B solved
+Easy              3 / 4       6 / 9
+Hard              3 / 9       1 / 4
+
+Which solver has the higher success rate at each difficulty?
+Predict the overall winner, then evaluate the pooled rates in Infoview.
+-/
+#eval (3 / 4 : ℚ) > 6 / 9  -- true
+#eval (3 / 9 : ℚ) > 1 / 4  -- true
+#eval (6 / 13 : ℚ) < 7 / 13  -- true
+
+/- An overall rate is a weighted average. The weight is the share of easy
+   problems, expressed as a fraction between zero and one. -/
+def benchmarkRate (easyShare easyRate hardRate : ℚ) : ℚ :=
+  easyShare * easyRate + (1 - easyShare) * hardRate
+
+/- Let p and q be the shares of easy problems for A and B. How much higher
+   must B's share be for B to win overall? Try proving the two directions
+   of the equivalence separately after unfolding `benchmarkRate`. -/
+theorem benchmark_reversal (p q : ℚ) :
+    benchmarkRate p (3 / 4) (3 / 9) < benchmarkRate q (6 / 9) (1 / 4)
+      ↔ 1 / 5 < q - p := by
+  unfold benchmarkRate
+  constructor <;> intro h <;> linarith
+
+/- The threshold is 20 percentage points. As a follow-up, use the same share
+   w for both solvers and prove that A leads by exactly 1 / 12. -/
+example (w : ℚ) :
+    benchmarkRate w (3 / 4) (3 / 9) -
+      benchmarkRate w (6 / 9) (1 / 4) = 1 / 12 := by
+  unfold benchmarkRate
+  linarith
+
+/-
+## Why the median minimises absolute error
+
+Three sensors report 20, 21 and 1000. Choose one estimate and add its
+absolute errors against all three readings. Try a few estimates.
+-/
+def absoluteLoss (low middle high estimate : ℚ) : ℚ :=
+  |high - estimate| + |estimate - low| + |estimate - middle|
+
+#eval absoluteLoss 20 21 1000 20  -- 981
+#eval absoluteLoss 20 21 1000 21  -- 980
+
+/- For any sorted triple, moving away from the middle reading increases the
+   loss by at least the distance moved. Before reading the proof, ask which
+   two terms you could pair and what lower bound their sum must satisfy.
+
+   The triangle inequality bounds the error from the two outer readings
+   below by high - low. The middle reading attains that bound and makes the
+   third error zero. Use Infoview to inspect `outerBound` before the final
+   arithmetic step. -/
+theorem median_loss_gap (low middle high estimate : ℚ)
+    (low_le_middle : low ≤ middle) (middle_le_high : middle ≤ high) :
+    absoluteLoss low middle high middle + |estimate - middle| ≤
+      absoluteLoss low middle high estimate := by
+  have span_nonneg : 0 ≤ high - low :=
+    sub_nonneg.mpr (low_le_middle.trans middle_le_high)
+  have outerBound : high - low ≤ |high - estimate| + |estimate - low| := by
+    simpa only [abs_of_nonneg span_nonneg] using abs_sub_le high estimate low
+  unfold absoluteLoss
+  rw [abs_of_nonneg (sub_nonneg.mpr middle_le_high),
+    abs_of_nonneg (sub_nonneg.mpr low_le_middle), sub_self middle, abs_zero, add_zero]
+  linarith
+
+/- Stretch. Prove the same bound for five sorted readings. Pair the smallest
+   with the largest, then the second-smallest with the second-largest.
+   Which terms are left, and where are both pairwise bounds attained? -/
 
 end Tutorial
