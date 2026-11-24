@@ -1,11 +1,19 @@
 module
 
+import Mathlib.Algebra.GroupWithZero.Divisibility
+import Mathlib.Algebra.GroupWithZero.Nat
+import Mathlib.Algebra.Order.Group.Abs
+import Mathlib.Algebra.Order.Ring.Rat
 import Workshop.Algorithms.Euclid
-import Mathlib.Data.ZMod.Basic
-import Mathlib.Tactic.Linarith
+
+/-
+Comments were present when importing `Workshop.Algorithms.Euclid`, but this module is now imported differently as `import Workshop.Algorithms.Euclid`.
+Decide if the following original comments still apply:
+```
 -- The #eval examples also use these modules at compile time.
 meta import Workshop.Algorithms.Euclid
-meta import Mathlib.Data.ZMod.Basic
+```
+-/
 
 set_option linter.unusedTactic false
 

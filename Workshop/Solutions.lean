@@ -1,7 +1,6 @@
 module
 
 public import Workshop.Algorithms.Euclid
-import Mathlib.Data.ZMod.Basic
 
 /-! Sample solutions. The worksheet has its own editable copies of the recursions. -/
 
@@ -12,10 +11,6 @@ namespace Solutions
 example : ¬ ((4 : Int) ∣ 13) := by
   grind
 
--- Optional Mathlib exercise. The canonical cast preserves multiplication.
-example (x y : Int) :
-    (Int.castRingHom (ZMod 7)) (x * y) = (x : ZMod 7) * (y : ZMod 7) := by
-  exact map_mul (Int.castRingHom (ZMod 7)) x y
 
 def g : Nat → Nat
   | 0 => 1
