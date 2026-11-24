@@ -138,6 +138,94 @@ def g : Nat → Nat
 /-
 Exercise 2: State and prove a theorem about g.
 -/
+
+/-
+## Optional: induction on labelled binary trees
+
+A leaf stores a value of type `α`. A branch stores a value of the same type
+at its root, along with its left and right subtrees. We'll use natural numbers
+for the labels.
+-/
+
+inductive LabelledTree (α : Type) where
+  | leaf (value : α)
+  | branch (value : α) (left right : LabelledTree α)
+
+namespace LabelledTree
+
+#check LabelledTree.branch
+
+-- Join two trees under a new root labelled 4.
+def sample : LabelledTree Nat :=
+  .branch 4 (.leaf 2) (.branch 7 (.leaf 1) (.leaf 3))
+
+-- Build a tree recursively, putting n at the root of countdown n.
+def countdown : Nat → LabelledTree Nat
+  | 0 => .leaf 0
+  | n + 1 => .branch (n + 1) (countdown n) (.leaf 0)
+
+def sum : LabelledTree Nat → Nat
+  | .leaf value => value
+  | .branch value left right => value + (sum left + sum right)
+
+#eval sum sample         -- 17
+#eval sum (countdown 3)  -- 6
+
+-- Draw each branch with its left child above its right child.
+def draw (tree : LabelledTree Nat) : String :=
+  let rec drawAt (tree : LabelledTree Nat) (linePrefix childPrefix : String) : String :=
+    match tree with
+    | .leaf value => linePrefix ++ toString value
+    | .branch value left right =>
+      linePrefix ++ toString value ++ "\n" ++
+        drawAt left (childPrefix ++ "├─ ") (childPrefix ++ "│  ") ++ "\n" ++
+        drawAt right (childPrefix ++ "└─ ") (childPrefix ++ "   ")
+  drawAt tree "" ""
+
+-- Put the cursor on a #eval line to see the diagram in Infoview.
+#eval IO.println (draw sample)
+#eval IO.println (draw (countdown 2))
+
+def mirror : LabelledTree α → LabelledTree α
+  | .leaf value => .leaf value
+  | .branch value left right => .branch value (mirror right) (mirror left)
+
+#eval IO.println (draw (mirror sample))
+
+/-
+Mirroring preserves the sum of the labels. In the branch case, look in
+Infoview for one induction hypothesis per subtree. Once both hypotheses
+have been used, the two subtrees' sums appear in opposite orders.
+-/
+theorem sum_mirror (tree : LabelledTree Nat) : sum (mirror tree) = sum tree := by
+  induction tree with
+  | leaf value => rfl
+  | branch value left right ihLeft ihRight =>
+    simp only [mirror, sum, ihLeft, ihRight]
+    grind
+
+-- Apply a function to every vertex label.
+def map (f : α → β) : LabelledTree α → LabelledTree β
+  | .leaf value => .leaf (f value)
+  | .branch value left right => .branch (f value) (map f left) (map f right)
+
+#eval sum (map (fun value => 2 * value) sample)  -- 34
+
+/-
+Exercise. Predict what happens to the sum if each label is tripled.
+Try it on sample, then adapt sum_map_double to prove your prediction for
+every tree. Use Infoview to see the arithmetic goal before `omega`.
+-/
+theorem sum_map_double (tree : LabelledTree Nat) :
+    sum (map (fun value => 2 * value) tree) = 2 * sum tree := by
+  induction tree with
+  | leaf value => rfl
+  | branch value left right ihLeft ihRight =>
+    simp only [map, sum, ihLeft, ihRight]
+    grind
+
+end LabelledTree
+
 /-
 # Collatz dynamics
 
@@ -180,7 +268,7 @@ example (n : Nat) (h : ∃ k, n = 2 * k + 1) : ∃ m, collatz n = 2 * m := by
   unfold collatz
   use 3 * k + 2
   simp
-  omega
+  grind
 
 /-
 # Euclid's algorithm
