@@ -21,6 +21,7 @@ the current goal and suggest one next step, then check the suggestion in Lean.
 -/
 
 namespace Tutorial
+namespace Divisibility
 
 variable (a b c d : Int) -- we declare a, b and c to be integers throughout (of type `Int`)
 
@@ -55,19 +56,19 @@ example : ¬ ((4 : Int) ∣ 13) := by
   sorry                 -- replace the `sorry` placeholder with a suitable proof tactic
 
 /-
-A theorem showing how to deal with `there exists`.
--/
-
-/-
 By definition, `a ∣ b` means `∃ c, b = a * c`.
 -/
 
+#check dvd_def
 
+/-
+A theorem showing how to deal with `there exists`.
+-/
 theorem dvd_trans (hab : a ∣ b) (hbd : b ∣ d) : a ∣ d := by
   obtain ⟨m, hm⟩ := hab   -- hab is a pair consisting of a witness we call `m` and a proof `hm`
   obtain ⟨n, hn⟩ := hbd   -- hbd similarly consists of a witness `n` and a proof `hn`
   rw [dvd_def]            -- rewrite the target using the definition of divisibility
-  rw [hn, hm]
+  rw [hn, hm]             -- rewrite the target using the hypotheses
   exists m * n           -- we exhibit a witness `m * n`
   grind                  -- we must prove that our witness satisfies the required equation
   done
@@ -75,7 +76,8 @@ theorem dvd_trans (hab : a ∣ b) (hbd : b ∣ d) : a ∣ d := by
 /-
 ## Exercise 1
 
-Complete the result below
+Complete the result below, replacing the `sorry` placeholder with as many lines of
+Lean code as are necessary.
 -/
 
 theorem dvd_add (hab : a ∣ b) (had : a ∣ d) : a ∣ (b + d) := by
@@ -87,9 +89,10 @@ theorem dvd_add (hab : a ∣ b) (had : a ∣ d) : a ∣ (b + d) := by
 /-
 ## Exercise 2 (optional)
 
-Think of another result concerning divsibility. Try to state and prove it.
+Think of another result concerning divsibility. State and prove it in Lean.
 -/
 
+end Divisibility
 
 /-
 # Mathlib and arithmetic modulo 7
@@ -526,7 +529,26 @@ def absoluteLoss (low middle high estimate : ℚ) : ℚ :=
    below by high - low. The middle reading attains that bound and makes the
    third error zero. Use Infoview to inspect `outerBound` before the final
    arithmetic step. -/
+
+/-
+One way to prove this is to use the result `abs__sub_le`, which states that
+`|a - c| ≤ |a - b| + |b - c|`
+-/
+
+#check abs_sub_le
+
 theorem median_loss_gap (low middle high estimate : ℚ)
+    (hllm : low ≤ middle) (hmlh : middle ≤ high) :
+    (absoluteLoss low middle high middle) + |estimate - middle| ≤
+      absoluteLoss low middle high estimate := by
+  unfold absoluteLoss
+  simp
+  have h2 : |high - middle| + |middle - low| = |high - low| := by grind
+  rw [h2]
+  apply abs_sub_le
+
+
+/- theorem median_loss_gap (low middle high estimate : ℚ)
     (low_le_middle : low ≤ middle) (middle_le_high : middle ≤ high) :
     absoluteLoss low middle high middle + |estimate - middle| ≤
       absoluteLoss low middle high estimate := by
@@ -538,7 +560,20 @@ theorem median_loss_gap (low middle high estimate : ℚ)
   rw [abs_of_nonneg (sub_nonneg.mpr middle_le_high),
     abs_of_nonneg (sub_nonneg.mpr low_le_middle), sub_self middle, abs_zero, add_zero]
   linarith
+ -/
 
+example (low middle high estimate : ℚ)
+    (low_le_middle : low ≤ middle) (middle_le_high : middle ≤ high) :
+    absoluteLoss low middle high middle + |estimate - middle| ≤
+      absoluteLoss low middle high estimate := by
+  have span_nonneg : 0 ≤ high - low :=
+    sub_nonneg.mpr (low_le_middle.trans middle_le_high)
+  have outerBound : high - low ≤ |high - estimate| + |estimate - low| := by
+    simpa only [abs_of_nonneg span_nonneg] using abs_sub_le high estimate low
+  unfold absoluteLoss
+  rw [abs_of_nonneg (sub_nonneg.mpr middle_le_high),
+    abs_of_nonneg (sub_nonneg.mpr low_le_middle), sub_self middle, abs_zero, add_zero]
+  linarith
 /- Stretch. Prove the same bound for five sorted readings. Pair the smallest
    with the largest, then the second-smallest with the second-largest.
    Which terms are left, and where are both pairwise bounds attained? -/
