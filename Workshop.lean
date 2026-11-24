@@ -1,2 +1,4 @@
-import Workshop.Algorithms.Euclid
-import Workshop.Solutions
+module
+
+public import Workshop.Algorithms.Euclid
+public import Workshop.Solutions

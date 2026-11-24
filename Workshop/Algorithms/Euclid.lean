@@ -1,4 +1,8 @@
-import Workshop.Instrumentation.Proofs
+module
+
+public import Workshop.Instrumentation.Proofs
+
+@[expose] public section
 
 inductive EuclidEvent where
   | division (a b q r : Nat)

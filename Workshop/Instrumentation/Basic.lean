@@ -1,4 +1,8 @@
+module
+
 /-! Event observers accumulate information alongside a state transition. -/
+
+@[expose] public section
 
 structure EventObserver (E : Type) where
   State : Type

@@ -1,4 +1,8 @@
-import Workshop.Instrumentation.Basic
+module
+
+public import Workshop.Instrumentation.Basic
+
+public section
 
 theorem runObserved_correct
     {S E : Type}

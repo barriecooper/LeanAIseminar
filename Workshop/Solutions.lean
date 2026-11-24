@@ -1,7 +1,11 @@
-import Workshop.Algorithms.Euclid
+module
+
+public import Workshop.Algorithms.Euclid
 import Mathlib.Data.ZMod.Basic
 
 /-! Sample solutions. The worksheet has its own editable copies of the recursions. -/
+
+@[expose] public section
 
 namespace Solutions
 

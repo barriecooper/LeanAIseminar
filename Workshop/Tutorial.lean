@@ -1,5 +1,10 @@
+module
+
 import Workshop.Algorithms.Euclid
 import Mathlib.Data.ZMod.Basic
+-- The #eval examples also use these modules at compile time.
+meta import Workshop.Algorithms.Euclid
+meta import Mathlib.Data.ZMod.Basic
 
 /-!
 Open Lean Infoview and click a `#check` or `#eval` line to see its result.
