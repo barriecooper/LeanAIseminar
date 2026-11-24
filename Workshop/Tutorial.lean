@@ -95,45 +95,6 @@ Think of another result concerning divsibility. State and prove it in Lean.
 end Divisibility
 
 /-
-# Mathlib and arithmetic modulo 7
-
-`(a : ZMod 7)` coerces the integer `a` to its residue class modulo 7.
-Two integers have the same residue class when their difference is divisible
-by 7. In particular, multiples of 7 have residue zero.
--/
-#check (a : ZMod 7)
-#eval ((-1 : Int) : ZMod 7)  -- 6
-#eval ((13 : Int) : ZMod 7)  -- 6
-#eval ((14 : Int) : ZMod 7)  -- 0
-
-#check Int.castRingHom (ZMod 7)
-#check ZMod.intCast_zmod_eq_zero_iff_dvd
-
-example (x : Int) : (x : ZMod 7) = 0 ↔ (7 : Int) ∣ x := by
-  exact ZMod.intCast_zmod_eq_zero_iff_dvd x 7
-
--- The canonical ring homomorphism preserves addition.
-example (x y : Int) :
-    (Int.castRingHom (ZMod 7)) (x + y) = (x : ZMod 7) + (y : ZMod 7) := by
-  exact map_add (Int.castRingHom (ZMod 7)) x y
-
-/- Optional exercise. Adapt the addition proof to multiplication. -/
-example (x y : Int) :
-    (Int.castRingHom (ZMod 7)) (x * y) = (x : ZMod 7) * (y : ZMod 7) := by
-  sorry
-
-example (x y z : Int) (h : x ∣ y - z) : x ∣ z - y := by
-  apply?
-
-/-
-Read the suggestion in Infoview. Replace `apply?` with the explicit proof
-using the suggested Mathlib theorem, then explain why reversing the
-difference preserves divisibility. The earlier witness proof constructs a
-multiplier and checks its equation. Here a library theorem supplies the
-implication from the given divisibility hypothesis.
--/
-
-/-
 # Recursion and induction
 -/
 
