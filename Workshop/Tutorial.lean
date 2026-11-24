@@ -216,9 +216,6 @@ theorem median_loss_gap (low middle high estimate : ℚ)
   rw [h2]
   apply abs_sub_le -- The `apply` tactic matches the target with the conclusion of a theorem.
 
-
-
-
 /-
 # Induction on labelled binary trees
 
