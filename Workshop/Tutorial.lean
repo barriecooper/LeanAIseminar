@@ -182,9 +182,45 @@ theorem collatz_even_of_odd (n : Nat) (h : ∃ k, n = 2 * k + 1) :
 Three sensors report 20, 21 and 1000. Choose one estimate and add its
 absolute errors against all three readings. Try a few estimates.
 -/
+def absoluteLoss (low middle high estimate : ℚ) : ℚ :=
+  |high - estimate| + |estimate - low| + |estimate - middle|
+
+#eval absoluteLoss 20 21 1000 20  -- 981
+#eval absoluteLoss 20 21 1000 21  -- 980
+
+/- For any sorted triple, moving away from the middle reading increases the
+   loss by at least the distance moved. Before reading the proof, ask which
+   two terms you could pair and what lower bound their sum must satisfy.
+
+   The triangle inequality bounds the error from the two outer readings
+   below by high - low. The middle reading attains that bound and makes the
+   third error zero. Use Infoview to inspect `outerBound` before the final
+   arithmetic step. -/
 
 /-
-## Optional: induction on labelled binary trees
+One way to prove this is to use the result `abs__sub_le`, which states that
+`|a - c| ≤ |a - b| + |b - c|`
+-/
+
+#check abs_sub_le
+
+theorem median_loss_gap (low middle high estimate : ℚ)
+    (hllm : low ≤ middle) (hmlh : middle ≤ high) :
+    (absoluteLoss low middle high middle) + |estimate - middle| ≤
+      absoluteLoss low middle high estimate := by
+  unfold absoluteLoss
+  simp
+
+  -- The `have` tactic introduces an additional hypothesis
+  have h2 : |high - middle| + |middle - low| = |high - low| := by grind
+  rw [h2]
+  apply abs_sub_le -- The `apply` tactic matches the target with the conclusion of a theorem.
+
+
+
+
+/-
+# Induction on labelled binary trees
 
 A leaf stores a value of type `α`. A branch stores a value of the same type
 at its root, along with its left and right subtrees. We'll use natural numbers
@@ -215,7 +251,10 @@ def sum : LabelledTree Nat → Nat
 #eval sum sample         -- 17
 #eval sum (countdown 3)  -- 6
 
--- Draw each branch with its left child above its right child.
+/-
+Ignore the text of the following defintion: it is used to pretty-print a tree.
+It draws each branch with its left child above its right child.
+-/
 def draw (tree : LabelledTree Nat) : String :=
   let rec drawAt (tree : LabelledTree Nat) (linePrefix childPrefix : String) : String :=
     match tree with
@@ -256,17 +295,17 @@ def map (f : α → β) : LabelledTree α → LabelledTree β
 #eval sum (map (fun value => 2 * value) sample)  -- 34
 
 /-
-Exercise. Predict what happens to the sum if each label is tripled.
-Try it on sample, then adapt sum_map_double to prove your prediction for
-every tree. Use Infoview to see the arithmetic goal before `omega`.
+## Exercise 6
+
+Complete the following proof. It shows that doubling the value of each node on
+the tree doubles the sum of the values
 -/
 theorem sum_map_double (tree : LabelledTree Nat) :
     sum (map (fun value => 2 * value) tree) = 2 * sum tree := by
   induction tree with
-  | leaf value => rfl
+  | leaf value => sorry
   | branch value left right ihLeft ihRight =>
-    simp only [map, sum, ihLeft, ihRight]
-    grind
+    sorry
 
 end LabelledTree
 
