@@ -106,7 +106,7 @@ def f : Nat → Nat
 
 theorem f_even (n : Nat) : 2 ∣ f n := by
   induction n with
-  | zero => simp [f]
+  | zero => simp [f] -- The `simp` tactic is a simplifier.
   | succ n ih =>
       simp [f]
       grind
@@ -118,7 +118,69 @@ def g : Nat → Nat
 #eval g 8
 
 /-
-Exercise 2: State and prove a theorem about g.
+## Exercise 3
+
+State and prove a theorem about `g`.
+-/
+
+/-
+# Collatz dynamics
+
+We can also use `if ... then ... else` conditions, e.g. to define the collatz function.
+-/
+def collatz (n : Nat) : Nat :=
+  if n % 2 == 0 then
+    n / 2
+  else
+    3 * n + 1
+
+#eval collatz 10  -- 5
+#eval collatz 11  -- 34
+
+/-
+We can define taking k-steps with the collatz function recursively.
+-/
+def collatzSeq (n : Nat) : Nat → Nat
+  | 0 => n
+  | k + 1 => collatz (collatzSeq n k)
+
+#eval collatzSeq 7 4    -- starting at 7 where do we get after 4 collatz steps?
+#eval (List.range 20).map (collatzSeq 7)    -- the first 20 values starting at 7
+
+example (n : Nat) (hp : 1 < n) (h : n % 4 = 1) :
+    collatzSeq n 3 < n := by
+  simp [collatzSeq, collatz]
+  grind
+  done
+
+/-
+## Exercise 4
+
+Prove that a number with remainder 1 modulo 4 takes the odd branch and lands on a multiple of 4.
+You can do this in two lines.
+-/
+theorem collatz_mod_four (n : Nat)
+    (h : n % 4 = 1) :
+    collatz n % 4 = 0 := by
+  sorry
+  done
+
+
+/-
+## Exercise 5 (Optional)
+Prove that if `n` is odd, then `collatz n` is even:
+-/
+theorem collatz_even_of_odd (n : Nat) (h : ∃ k, n = 2 * k + 1) :
+    ∃ m, collatz n = 2 * m := by
+  obtain ⟨k, rfl⟩ := h
+  sorry
+  done
+
+/-
+# Why the median minimises absolute error
+
+Three sensors report 20, 21 and 1000. Choose one estimate and add its
+absolute errors against all three readings. Try a few estimates.
 -/
 
 /-
