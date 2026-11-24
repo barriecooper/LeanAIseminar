@@ -29,5 +29,5 @@ and using AI to explore GCD correctness. That challenge combines GCD preservatio
 with a fuel bound and has a complete proof in `Workshop/Algorithms/Euclid.lean`.
 
 Before delivery, time the setup and activities in a fresh Codespace. Confirm
-that Infoview displays evaluations and goals and that the five intentional student
+that Infoview displays evaluations and goals and that the four intentional student
 placeholders appear as warnings.

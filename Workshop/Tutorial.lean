@@ -169,6 +169,19 @@ theorem collatz_mod_four (n : Nat)
     collatz n % 4 = 0 := by
   sorry
 
+example (n : Nat) (hp : 1 < n) (h : n % 4 = 1) :
+    collatzSeq n 3 < n := by
+  simp [collatzSeq, collatz]
+  grind
+
+
+example (n : Nat) (h : ∃ k, n = 2 * k + 1) : ∃ m, collatz n = 2 * m := by
+  obtain ⟨k, rfl⟩ := h
+  unfold collatz
+  use 3 * k + 2
+  simp
+  omega
+
 /-
 # Euclid's algorithm
 
@@ -178,6 +191,60 @@ zero divisor. Otherwise, `.event (b, r) (.division a b q r)` supplies the next
 pair and tells the observer about the division. Each observer sees the same
 events and can update only its own state.
 -/
+
+def euclid (a b : ℕ) :=
+  if _h : b = 0 then a else euclid b (a % b)
+  termination_by b
+  decreasing_by
+  apply Nat.mod_lt
+  exact Nat.ne_zero_iff_zero_lt.mp _h
+
+lemma euclid_eq_euclid_mod_of_ne_zero (a b : ℕ) (h : b ≠ 0) : euclid a b = euclid b (a % b) := by
+  conv_lhs =>
+    unfold euclid
+  simp [h]
+
+lemma euclid_zero_eq (a : ℕ) : euclid a 0 = a := by
+  unfold euclid
+  exact ite_eq_left rfl
+
+example (a b : ℕ) : euclid a b ∣ a ∧ euclid a b ∣ b := by
+  induction b using Nat.strong_induction_on generalizing a with
+  | ind b ih =>
+  by_cases hb : b = 0
+  · subst hb
+    rw [euclid_zero_eq]
+    simp
+  · rw [euclid_eq_euclid_mod_of_ne_zero _ _ hb]
+    have rem_lt : a % b < b := by
+      refine Nat.mod_lt a ?_
+      exact Nat.ne_zero_iff_zero_lt.mp hb
+    specialize ih (a % b) rem_lt b
+    have h3 : b * (a / b) + a % b = a := Nat.div_add_mod a b
+    rcases ih with ⟨midb, midr⟩
+    constructor
+    · nth_rewrite 2 [←h3]
+      apply dvd_add
+      · exact Nat.dvd_mul_right_of_dvd midb (a / b)
+      exact midr
+    exact midb
+
+example (a b d : ℕ) (h : d ∣ a ∧ d ∣ b) : d ∣ euclid a b := by
+ induction b using Nat.strong_induction_on generalizing a d with
+ | ind b ih =>
+  by_cases hb : b = 0
+  · subst hb
+    rw [euclid_zero_eq]
+    grind
+  · rw [euclid_eq_euclid_mod_of_ne_zero _ _ hb]
+    apply ih
+    · refine Nat.mod_lt a ?_
+      exact Nat.zero_lt_of_ne_zero hb
+    simp_all only [and_imp, true_and]
+    obtain ⟨left, right⟩ := h
+    exact (Nat.dvd_mod_iff right).mpr left
+
+
 #check EuclidEvent.division
 #check euclidStep
 #eval euclidStep (1071, 462)  -- some ((462, 147), division 1071 462 2 147)
@@ -240,7 +307,8 @@ theorem countQuotientOne_eq_trace_fold (a b : Nat) :
 ## Optional AI-assisted challenge: prove Euclid computes the GCD
 
 Evaluations test individual inputs. Observer independence establishes that
-observers agree on the result. Prove that result equals `Nat.gcd` in three stages.
+observers agree on the result. The proof that this result equals `Nat.gcd`
+has three stages.
 
 1. GCD preservation. Show that a division preserves the GCD of the pair,
    then extend this to the plain run by induction on fuel.
@@ -266,6 +334,11 @@ example (o : EventObserver EuclidEvent) (a b : Nat) :
     (runEuclid o a b).1 = Nat.gcd a b := by
   -- First relate the observed run to the plain run.
   simp only [runEuclid, runObserved_correct]
-  sorry
+  have gcd_preserved := euclid_gcd_preserved (b + 1) a b
+  have final_divisor_zero :=
+    euclid_fuel_sufficient (b + 1) a b (Nat.lt_succ_self b)
+  -- With a zero divisor, the GCD is the first component of the final pair.
+  rw [final_divisor_zero, Nat.gcd_zero_right] at gcd_preserved
+  exact gcd_preserved
 
 end Tutorial

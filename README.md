@@ -60,5 +60,5 @@ lake env lean Workshop/Tutorial.lean
 ```
 
 The default build checks the library and sample solutions. The worksheet check
-also prints the `#eval` outputs and should emit exactly five intentional
+also prints the `#eval` outputs and should emit exactly four intentional
 `sorry` warnings.
