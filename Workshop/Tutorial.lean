@@ -7,6 +7,8 @@ import Mathlib.Tactic.Linarith
 meta import Workshop.Algorithms.Euclid
 meta import Mathlib.Data.ZMod.Basic
 
+set_option linter.unusedTactic false
+
 /-!
 Open Lean Infoview and click a `#check` or `#eval` line to see its result.
 Click inside a proof to see the goal. Try editing the examples and replacing
@@ -20,7 +22,7 @@ the current goal and suggest one next step, then check the suggestion in Lean.
 
 namespace Tutorial
 
-variable (a b c : Int) -- we declare a, b and c to be integers throughout (of type `Int`)
+variable (a b c d : Int) -- we declare a, b and c to be integers throughout (of type `Int`)
 
 /-
 We can `#check` what sort of object anything is ...
@@ -56,23 +58,38 @@ example : ¬ ((4 : Int) ∣ 13) := by
 A theorem showing how to deal with `there exists`.
 -/
 
-theorem dvd_trans (hab : a ∣ b) (hbc : b ∣ c) : a ∣ c := by
+/-
+By definition, `a ∣ b` means `∃ c, b = a * c`.
+-/
+
+
+theorem dvd_trans (hab : a ∣ b) (hbd : b ∣ d) : a ∣ d := by
   obtain ⟨m, hm⟩ := hab   -- hab is a pair consisting of a witness we call `m` and a proof `hm`
-  obtain ⟨n, hn⟩ := hbc   -- hbc similarly consists of a witness `n` and a proof `hn`
+  obtain ⟨n, hn⟩ := hbd   -- hbd similarly consists of a witness `n` and a proof `hn`
+  rw [dvd_def]            -- rewrite the target using the definition of divisibility
+  rw [hn, hm]
   exists m * n           -- we exhibit a witness `m * n`
   grind                  -- we must prove that our witness satisfies the required equation
+  done
 
 /-
-And an alternative version showing how to deal with `for all` and how to use existing theorems.
+## Exercise 1
+
+Complete the result below
 -/
 
-theorem quant_dvd_trans : ∀ x : Int, ∀ y : Int, ∀ z : Int, x ∣ y ∧ y ∣ z → x ∣ z := by
-  intro x y z ⟨hxy, hyz⟩          -- introduce the integers and unpack the two conditions
-  apply dvd_trans x y z hxy hyz   -- conclude by applying our previous theorem `dvd_trans`
+theorem dvd_add (hab : a ∣ b) (had : a ∣ d) : a ∣ (b + d) := by
+  obtain ⟨m, hm⟩ := hab   -- hab is a pair consisting of a witness we call `m` and a proof `hm`
+  obtain ⟨n, hn⟩ := had   -- hbc similarly consists of a witness `n` and a proof `hn`
+  sorry
+  done
 
 /-
-Exercise 1: Invent some of your own theorems and proofs involving divisibility. Depending on how ambitious you are, you might need to explore (with the help of AI?) new proof tactics.
+## Exercise 2 (optional)
+
+Think of another result concerning divsibility. Try to state and prove it.
 -/
+
 
 /-
 # Mathlib and arithmetic modulo 7
